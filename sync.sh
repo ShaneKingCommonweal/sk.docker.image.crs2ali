@@ -1,4 +1,4 @@
-#!bin/sh
+#!/usr/bin/env bash
 
 #alicr_user_name
 #alicr_pass_word
