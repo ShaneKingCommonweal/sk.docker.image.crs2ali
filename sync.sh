@@ -11,6 +11,7 @@
 # tname: tag name
 
 count=0
+gh_repo="https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_user_name}/mirror.crs2ali.sh.git"
 
 # L3
 for cname in `ls ./cr3`
@@ -39,7 +40,8 @@ done
 
 
 if [ $count -gt 0 ];then
-  git add -A
-  git commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
-  git push -f "https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_user_name}/mirror.crs2ali.sh.git" mirror:mirror
+  git -C . add -A
+  git -C . commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
+  echo $gh_repo
+  git -C . push -f $gh_repo mirror:mirror
 fi
