@@ -1,12 +1,7 @@
-sudo: enabled
-os:
-  - linux
 services:
   - docker
 
 before_install:
-  - chmod +x ./pre.sh
-  - ./pre.sh
   - docker login -u${alicr_user_name} -p${alicr_pass_word} registry.cn-shanghai.aliyuncs.com
   - chmod +x ./sync.sh
   - ./sync.sh
