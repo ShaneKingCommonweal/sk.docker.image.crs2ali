@@ -38,7 +38,7 @@ done
 # L4
 
 
-if [ $count -lt 0 ];then
+if [ $count -gt 0 ];then
   git add -A
   git commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
   git push -f "https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_user_name}/mirror.crs2ali.sh.git" mirror:mirror

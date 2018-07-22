@@ -3,8 +3,6 @@ services:
 
 before_install:
   - docker login -u${alicr_user_name} -p${alicr_pass_word} registry.cn-shanghai.aliyuncs.com
-  - pwd
-  - ls -alh
   - chmod +x ./sync.sh
   - ./sync.sh
 
