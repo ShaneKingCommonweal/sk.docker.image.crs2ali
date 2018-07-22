@@ -1,2 +1,2 @@
-# mirror.crs
-Container Registry Sync
+# mirror.crs2ali.sh
+Container Registry Sync to Aliyun Shanghai
