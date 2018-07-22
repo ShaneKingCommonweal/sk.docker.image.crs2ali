@@ -1,7 +1,8 @@
+sudo: enabled
+os:
+  - linux
 services:
   - docker
-
-sudo: enabled
 
 before_install:
   - chmod +x ./pre.sh
