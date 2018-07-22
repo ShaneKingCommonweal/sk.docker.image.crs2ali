@@ -5,11 +5,7 @@ services:
 
 before_install:
   - sudo mkdir -p /etc/docker
-  - sudo tee /etc/docker/daemon.json <<-'EOF'
-  - {
-  -   "registry-mirrors": ["https://registry.cn-shanghai.aliyuncs.com"]
-  - }
-  - EOF
+  - sudo echo "{\"registry-mirrors\": [\"https://registry.cn-shanghai.aliyuncs.com\"]}" > /etc/docker/daemon.json
   - sudo systemctl daemon-reload
   - sudo systemctl restart docker
   - docker login -u${alicr_user_name} -p${alicr_pass_word}
