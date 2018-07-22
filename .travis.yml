@@ -4,11 +4,9 @@ services:
 sudo: enabled
 
 before_install:
-  - sudo mkdir -p /etc/docker
-  - sudo echo "{\"registry-mirrors\": [\"https://registry.cn-shanghai.aliyuncs.com\"]}" > /etc/docker/daemon.json
-  - sudo systemctl daemon-reload
-  - sudo systemctl restart docker
-  - docker login -u${alicr_user_name} -p${alicr_pass_word}
+  - chmod +x ./pre.sh
+  - ./pre.sh
+  - docker login -u${alicr_user_name} -p${alicr_pass_word} registry.cn-shanghai.aliyuncs.com
   - chmod +x ./sync.sh
   - ./sync.sh
 
