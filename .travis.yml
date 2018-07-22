@@ -1,7 +1,7 @@
-sudo: required
-
 services:
   - docker
+
+sudo: enabled
 
 before_install:
   - sudo mkdir -p /etc/docker
