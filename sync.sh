@@ -38,7 +38,7 @@ function ptp()
 commit()
 {
   echo "${red} $count changed!"
-  if [ $count -gt 0 ] ; then
+  if [ ${count} -gt 0 ] ; then
     git -C ./${pname} pull
     git -C ./${pname} add -A
     git -C ./${pname} commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
@@ -56,12 +56,14 @@ function mirrors()
     do
       for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
-        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
-          let count=$count+1
-          touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
-          pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}"
-        else
-          touch ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md
+        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md ] ; then
+          if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
+            let count=$count+1
+            touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
+            pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}"
+          else
+            touch ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md
+          fi
         fi
       done
     done
@@ -76,12 +78,14 @@ function mirrors()
       do
         for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
         do
-          if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
-            let count=$count+1
-            touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
-            pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}"
-          else
-            touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md
+          if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md ] ; then
+            if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
+              let count=$count+1
+              touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
+              pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}"
+            else
+              touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md
+            fi
           fi
         done
       done
@@ -92,7 +96,7 @@ function mirrors()
   # rname: r name, https://hub.docker.com/r/vmware/registry-photon/
 
   echo "${red} $count changed!"
-  if [ $count -gt 0 ] ; then
+  if [ ${count} -gt 0 ] ; then
     wait
     commit
   else
@@ -105,9 +109,9 @@ mirrors &
 while true;
 do
   duration=$SECONDS
-  if [[ -e ./commit.done ]] || [[ $duration -ge $sec ]] ; then
+  if [[ -e ./commit.done ]] || [[ ${duration} -ge ${sec} ]] ; then
 
-    [[ $duration -ge $sec ]] && echo -e "${red} more than $(expr $sec / 60) min,abort this build"
+    [[ ${duration} -ge ${sec} ]] && echo -e "${red} more than $(expr ${sec} / 60) min,abort this build"
 
     [[ ! -e ./commit.done ]] && commit
 
