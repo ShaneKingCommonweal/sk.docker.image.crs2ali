@@ -31,7 +31,7 @@ do
           docker push ${user_registry}/${uname}_${iname}:${tname}
           touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
           let count=$count+1
-        elif [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -eq 1 ]; then
+        elif [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -eq 2 ]; then
           docker pull ${uname}/${iname}:${tname}
           docker tag ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}
           docker push ${user_registry}/${uname}_${iname}:${tname}
@@ -59,7 +59,7 @@ do
           docker push ${user_registry}/${cname}_${uname}_${iname}:${tname}
           touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
           let count=$count+1
-        elif [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -eq 1 ]; then
+        elif [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -eq 2 ]; then
           docker pull ${cname}/${uname}/${iname}:${tname}
           docker tag ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}
           docker push ${user_registry}/${cname}_${uname}_${iname}:${tname}
