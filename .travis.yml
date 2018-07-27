@@ -4,7 +4,7 @@ services:
 before_install:
   - docker login -u${alicr_user_name} -p${alicr_pass_word} registry.cn-shanghai.aliyuncs.com
   - chmod +x ./sync.sh
-  - ./sync.sh
+  - travis_wait 30 ./sync.sh
 
 script:
   - echo hello

@@ -11,20 +11,23 @@
 # tname: tag name
 
 count=0
-gh_repo="https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_user_name}/mirror.crs2ali.sh.git"
+pname="mirror.crs2ali.sh"
+
+[[ -d ${pname} ]] && rm -rf ./${pname}
+git clone "https://github.com/${gh_user_name}/${pname}.git"
 
 # L2
-for uname in `ls ./cr2`
+for uname in `ls ./${pname}/cr2`
 do
-  for iname in `ls ./cr2/${uname}`
+  for iname in `ls ./${pname}/cr2/${uname}`
     do
-      for tname in `ls ./cr2/${uname}/${iname}`
+      for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
-        if [ ! -f ./cr2/${uname}/${iname}/${tname}/done.md ];then
+        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ];then
           docker pull ${uname}/${iname}:${tname}
           docker tag ${uname}/${iname}:${tname} registry.cn-shanghai.aliyuncs.com/shaneking-sh/${uname}_${iname}:${tname}
           docker push registry.cn-shanghai.aliyuncs.com/shaneking-sh/${uname}_${iname}:${tname}
-          touch ./cr2/${uname}/${iname}/${tname}/done.md
+          touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
           let count=$count+1
         fi
       done
@@ -32,19 +35,19 @@ do
 done
 
 # L3
-for cname in `ls ./cr3`
+for cname in `ls ./${pname}/cr3`
 do
-  for uname in `ls ./cr3/${cname}`
+  for uname in `ls ./${pname}/cr3/${cname}`
   do
-    for iname in `ls ./cr3/${cname}/${uname}`
+    for iname in `ls ./${pname}/cr3/${cname}/${uname}`
     do
-      for tname in `ls ./cr3/${cname}/${uname}/${iname}`
+      for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
       do
-        if [ ! -f ./cr3/${cname}/${uname}/${iname}/${tname}/done.md ];then
+        if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ];then
           docker pull ${cname}/${uname}/${iname}:${tname}
           docker tag ${cname}/${uname}/${iname}:${tname} registry.cn-shanghai.aliyuncs.com/shaneking-sh/${cname}_${uname}_${iname}:${tname}
-          travis_wait 30 docker push registry.cn-shanghai.aliyuncs.com/shaneking-sh/${cname}_${uname}_${iname}:${tname}
-          touch ./cr3/${cname}/${uname}/${iname}/${tname}/done.md
+          docker push registry.cn-shanghai.aliyuncs.com/shaneking-sh/${cname}_${uname}_${iname}:${tname}
+          touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
           let count=$count+1
         fi
       done
@@ -57,10 +60,8 @@ done
 
 
 if [ $count -gt 0 ];then
-  ls -alh .
-  git -C . pull
-  git -C . add -A
-  git -C . commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
-  echo $gh_repo
-  git -C . push -f $gh_repo mirror:mirror
+  git -C ./${pname} pull
+  git -C ./${pname} add -A
+  git -C ./${pname} commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
+  git -C ./${pname} push -f "https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_user_name}/${pname}.git" mirror:mirror
 fi
