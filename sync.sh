@@ -12,6 +12,7 @@
 
 count=0
 pname="mirror.crs2ali.sh"
+user_registry="registry.cn-shanghai.aliyuncs.com/shaneking-sh"
 
 [[ -d ${pname} ]] && rm -rf ./${pname}
 git clone "https://github.com/${gh_user_name}/${pname}.git"
@@ -23,13 +24,21 @@ do
     do
       for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
+      {
         if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ];then
           docker pull ${uname}/${iname}:${tname}
-          docker tag ${uname}/${iname}:${tname} registry.cn-shanghai.aliyuncs.com/shaneking-sh/${uname}_${iname}:${tname}
-          docker push registry.cn-shanghai.aliyuncs.com/shaneking-sh/${uname}_${iname}:${tname}
+          docker tag ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}
+          docker push ${user_registry}/${uname}_${iname}:${tname}
+          touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
+          let count=$count+1
+        elif [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -eq 1 ]; then
+          docker pull ${uname}/${iname}:${tname}
+          docker tag ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}
+          docker push ${user_registry}/${uname}_${iname}:${tname}
           touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
           let count=$count+1
         fi
+      } &
       done
     done
 done
@@ -43,13 +52,21 @@ do
     do
       for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
       do
+      {
         if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ];then
           docker pull ${cname}/${uname}/${iname}:${tname}
-          docker tag ${cname}/${uname}/${iname}:${tname} registry.cn-shanghai.aliyuncs.com/shaneking-sh/${cname}_${uname}_${iname}:${tname}
-          docker push registry.cn-shanghai.aliyuncs.com/shaneking-sh/${cname}_${uname}_${iname}:${tname}
+          docker tag ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}
+          docker push ${user_registry}/${cname}_${uname}_${iname}:${tname}
+          touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
+          let count=$count+1
+        elif [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -eq 1 ]; then
+          docker pull ${cname}/${uname}/${iname}:${tname}
+          docker tag ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}
+          docker push ${user_registry}/${cname}_${uname}_${iname}:${tname}
           touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
           let count=$count+1
         fi
+      } &
       done
     done
   done
@@ -58,6 +75,7 @@ done
 # L4
 # rname: r name, https://hub.docker.com/r/vmware/registry-photon/
 
+wait
 
 if [ $count -gt 0 ];then
   git -C ./${pname} pull
