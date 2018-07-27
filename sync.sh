@@ -57,6 +57,8 @@ done
 
 
 if [ $count -gt 0 ];then
+  ls -alh .
+  git -C . pull
   git -C . add -A
   git -C . commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
   echo $gh_repo
