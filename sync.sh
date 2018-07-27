@@ -52,16 +52,16 @@ function mirrors()
   for uname in `ls ./${pname}/cr2`
   do
     for iname in `ls ./${pname}/cr2/${uname}`
+    do
+      for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
-        for tname in `ls ./${pname}/cr2/${uname}/${iname}`
-        do
-          if [[ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md || `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -eq 2 ]];then
-            pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}"
-            touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
-            let count=$count+1
-          fi
-        done
+        if [[ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md || `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -eq 2 ]] ; then
+          let count=$count+1
+          touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
+          pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}"
+        fi
       done
+    done
   done
 
   # L3
@@ -73,10 +73,10 @@ function mirrors()
       do
         for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
         do
-          if [[ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md || `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -eq 2 ]];then
-            pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}"
-            touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
+          if [[ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md || `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -eq 2 ]] ; then
             let count=$count+1
+            touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
+            pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}"
           fi
         done
       done
