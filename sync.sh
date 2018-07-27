@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+SECONDS=0
+
+source ./pipe.sh
+pipe_init 30
+
 #alicr_user_name
 #alicr_pass_word
 #gh_user_name
@@ -17,6 +22,13 @@ user_registry="registry.cn-shanghai.aliyuncs.com/shaneking-sh"
 [[ -d ${pname} ]] && rm -rf ./${pname}
 git clone "https://github.com/${gh_user_name}/${pname}.git"
 
+function ptp()
+{
+  docker pull $1
+  docker tag $1 $2
+  docker push $2
+}
+
 # L2
 for uname in `ls ./${pname}/cr2`
 do
@@ -24,21 +36,11 @@ do
     do
       for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
-      {
-        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ];then
-          docker pull ${uname}/${iname}:${tname}
-          docker tag ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}
-          docker push ${user_registry}/${uname}_${iname}:${tname}
-          touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
-          let count=$count+1
-        elif [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -eq 2 ]; then
-          docker pull ${uname}/${iname}:${tname}
-          docker tag ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}
-          docker push ${user_registry}/${uname}_${iname}:${tname}
+        if [[ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md || `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -eq 2 ]];then
+          pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}"
           touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
           let count=$count+1
         fi
-      } &
       done
     done
 done
@@ -52,21 +54,11 @@ do
     do
       for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
       do
-      {
-        if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ];then
-          docker pull ${cname}/${uname}/${iname}:${tname}
-          docker tag ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}
-          docker push ${user_registry}/${cname}_${uname}_${iname}:${tname}
-          touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
-          let count=$count+1
-        elif [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -eq 2 ]; then
-          docker pull ${cname}/${uname}/${iname}:${tname}
-          docker tag ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}
-          docker push ${user_registry}/${cname}_${uname}_${iname}:${tname}
+        if [[ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md || `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -eq 2 ]];then
+          pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}"
           touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
           let count=$count+1
         fi
-      } &
       done
     done
   done
