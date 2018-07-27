@@ -90,7 +90,7 @@ function mirrors()
   commit
 }
 
-mirror &
+mirrors &
 
 while true;
 do
