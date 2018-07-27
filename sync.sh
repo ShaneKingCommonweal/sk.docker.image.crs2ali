@@ -43,7 +43,7 @@ do
         if [ ! -f ./cr3/${cname}/${uname}/${iname}/${tname}/done.md ];then
           docker pull ${cname}/${uname}/${iname}:${tname}
           docker tag ${cname}/${uname}/${iname}:${tname} registry.cn-shanghai.aliyuncs.com/shaneking-sh/${cname}_${uname}_${iname}:${tname}
-          docker push registry.cn-shanghai.aliyuncs.com/shaneking-sh/${cname}_${uname}_${iname}:${tname}
+          travis_wait 30 docker push registry.cn-shanghai.aliyuncs.com/shaneking-sh/${cname}_${uname}_${iname}:${tname}
           touch ./cr3/${cname}/${uname}/${iname}/${tname}/done.md
           let count=$count+1
         fi

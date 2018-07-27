@@ -1,5 +1,5 @@
 # mirror.crs2ali.sh
-Container Registry Sync to Aliyun Shanghai
+Container registry sync to Aliyun Shanghai for internal network
 
 [![][travis img]][travis]
 
