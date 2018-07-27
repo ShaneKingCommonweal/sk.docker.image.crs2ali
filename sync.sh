@@ -56,10 +56,12 @@ function mirrors()
     do
       for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
-        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -eq 2 ] ; then
+        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
           let count=$count+1
           touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
           pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}"
+        else
+          touch ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md
         fi
       done
     done
@@ -74,10 +76,12 @@ function mirrors()
       do
         for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
         do
-          if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -eq 2 ] ; then
+          if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
             let count=$count+1
             touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
             pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}"
+          else
+            touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md
           fi
         done
       done
@@ -87,6 +91,7 @@ function mirrors()
   # L4
   # rname: r name, https://hub.docker.com/r/vmware/registry-photon/
 
+  echo "${red} $count changed!"
   if [ $count -gt 0 ] ; then
     wait
     commit
