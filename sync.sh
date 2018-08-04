@@ -37,13 +37,10 @@ function ptp()
 
 commit()
 {
-  echo "${red} $count changed!"
-  if [ ${count} -gt 0 ] ; then
-    git -C ./${pname} pull
-    git -C ./${pname} add -A
-    git -C ./${pname} commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
-    git -C ./${pname} push -f "https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_user_name}/${pname}.git" mirror:mirror
-  fi
+  git -C ./${pname} pull
+  git -C ./${pname} add -A
+  git -C ./${pname} commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
+  git -C ./${pname} push -f "https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_user_name}/${pname}.git" mirror:mirror
   echo 1 > ./commit.done
 }
 
