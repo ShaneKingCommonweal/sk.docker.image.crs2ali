@@ -1,5 +1,5 @@
 # image.crs2ali.sh
-💪k8s images: Container registry sync to Aliyun Shanghai for internal network
+💪k8s images: Container Registry Sync to Aliyun Shanghai for internal network
 
 [![][travis img]][travis]
 
