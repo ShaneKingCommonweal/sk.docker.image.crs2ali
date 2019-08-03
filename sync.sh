@@ -12,7 +12,7 @@
 
 count=0
 pname="mirror.crs2ali.sh"
-user_registry="registry.cn-shanghai.aliyuncs.com/shaneking-sh"
+user_registry="registry.cn-shanghai.aliyuncs.com/sk-sh"
 
 SECONDS=0
 
@@ -54,10 +54,10 @@ function mirrors()
       for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
         if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md ] ; then
-          if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
+          if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
             let count=$count+1
             touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
-            pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}"
+            pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
           else
             touch ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md
           fi
@@ -76,10 +76,10 @@ function mirrors()
         for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
         do
           if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md ] ; then
-            if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
+            if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
               let count=$count+1
               touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
-              pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}"
+              pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
             else
               touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md
             fi
