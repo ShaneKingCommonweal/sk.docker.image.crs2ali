@@ -11,7 +11,7 @@
 # tname: tag name
 
 count=0
-pname="mirror.crs2ali.sh"
+pname="image.crs2ali.sh"
 user_registry="registry.cn-shanghai.aliyuncs.com/sk-sh"
 
 SECONDS=0
@@ -44,7 +44,7 @@ commit()
   echo 1 > ./commit.done
 }
 
-function mirrors()
+function images()
 {
   # L2
   for uname in `ls ./${pname}/cr2`
@@ -101,7 +101,7 @@ function mirrors()
   fi
 }
 
-mirrors &
+images &
 
 while true;
 do
