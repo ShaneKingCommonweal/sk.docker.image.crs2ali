@@ -92,7 +92,7 @@ function images()
   # L4
   # rname: r name, https://hub.docker.com/r/vmware/registry-photon/
 
-  echo "${red} $count changed!"
+  echo -e "${red} $count changed!"
   if [ ${count} -gt 0 ] ; then
     wait
     commit
@@ -127,4 +127,4 @@ do
 done
 
 sleep 120
-echo "${red} bye bye"
+echo -e "${red} bye bye"
