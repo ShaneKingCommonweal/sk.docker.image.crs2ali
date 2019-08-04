@@ -1,35 +1,34 @@
 #!/usr/bin/env bash
 
-pname="image.crs2ali.sh"
-user_registry="registry.cn-shanghai.aliyuncs.com/sk-sh"
+user_registry="registry-vpc.cn-shanghai.aliyuncs.com/sk-sh"
 
 # L2
-for uname in `ls ./${pname}/cr2`
+for uname in `ls ./cr2`
 do
-  for iname in `ls ./${pname}/cr2/${uname}`
+  for iname in `ls ./cr2/${uname}`
   do
-    for tname in `ls ./${pname}/cr2/${uname}/${iname}`
+    for tname in `ls ./cr2/${uname}/${iname}`
     do
-      if [ -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] ; then
+      if [ -f ./cr2/${uname}/${iname}/${tname}/done.md ] ; then
         docker pull ${user_registry}/${iname}:${tname}
-        docker tag ${user_registry}/${iname}:${tname} ${pname}/${uname}:${iname}
+        docker tag ${user_registry}/${iname}:${tname} ${uname}/${iname}:${tname}
       fi
     done
   done
 done
 
 # L3
-for cname in `ls ./${pname}/cr3`
+for cname in `ls ./cr3`
 do
-  for uname in `ls ./${pname}/cr3/${cname}`
+  for uname in `ls ./cr3/${cname}`
   do
-    for iname in `ls ./${pname}/cr3/${cname}/${uname}`
+    for iname in `ls ./cr3/${cname}/${uname}`
     do
-      for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
+      for tname in `ls ./cr3/${cname}/${uname}/${iname}`
       do
-        if [ -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
+        if [ -f ./cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
           docker pull ${user_registry}/${iname}:${tname}
-          docker tag ${user_registry}/${iname}:${tname} ${pname}/${cname}/${uname}:${iname}
+          docker tag ${user_registry}/${iname}:${tname} ${cname}/${uname}/${iname}:${tname}
         fi
       done
     done
