@@ -138,8 +138,10 @@ function images()
 
   echo -e "${yellow} syncCount : $syncCount changed!"
   echo -e "${yellow} doneCount : $doneCount changed!"
-  if [ ${doneCount} -gt 0 ] ; then
+  if [ ${syncCount} -gt 0 ] ; then
     wait
+    commit
+  elif [ ${doneCount} -gt 0 ] ; then
     commit
   else
     echo 1 > ./commit.done
