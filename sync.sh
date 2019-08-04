@@ -12,8 +12,6 @@
 
 syncCount=0
 doneCount=0
-checkedCount=0
-mdCount=0
 pname="image.crs2ali.sh"
 user_registry="registry.cn-shanghai.aliyuncs.com/sk-sh"
 
@@ -56,19 +54,14 @@ function images()
     do
       for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
-        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md ] ; then
-          if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] ; then
-            if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
-              let syncCount=$syncCount+1
-              echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
-              pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
-            else
-              let doneCount=$doneCount+1
-              touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
-            fi
+        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] ; then
+          if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
+            let syncCount=$syncCount+1
+            echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
+            pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
           else
-            let checkedCount=$checkedCount+1
-            touch ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md
+            let doneCount=$doneCount+1
+            touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
           fi
         fi
       done
@@ -84,19 +77,14 @@ function images()
       do
         for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
         do
-          if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md ] ; then
-            if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
-              if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
-                let syncCount=$syncCount+1
-                echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
-                pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
-              else
-                let doneCount=$doneCount+1
-                touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
-              fi
+          if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
+            if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
+              let syncCount=$syncCount+1
+              echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
+              pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
             else
-              let checkedCount=$checkedCount+1
-              touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md
+              let doneCount=$doneCount+1
+              touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
             fi
           fi
         done
@@ -109,9 +97,7 @@ function images()
 
   echo -e "${yellow} syncCount : $syncCount changed!"
   echo -e "${yellow} doneCount : $doneCount changed!"
-  echo -e "${yellow} checkedCount : $checkedCount changed!"
-  let mdCount=$doneCount+$checkedCount
-  if [ ${mdCount} -gt 0 ] ; then
+  if [ ${doneCount} -gt 0 ] ; then
     wait
     commit
   else

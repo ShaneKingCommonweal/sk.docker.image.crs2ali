@@ -10,7 +10,7 @@ do
   do
     for tname in `ls ./${pname}/cr2/${uname}/${iname}`
     do
-      if [ -f ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md ] ; then
+      if [ -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] ; then
         docker pull ${user_registry}/${iname}:${tname}
         docker tag ${user_registry}/${iname}:${tname} ${pname}/${uname}:${iname}
       fi
@@ -27,7 +27,7 @@ do
     do
       for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
       do
-        if [ -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md ] ; then
+        if [ -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
           docker pull ${user_registry}/${iname}:${tname}
           docker tag ${user_registry}/${iname}:${tname} ${pname}/${cname}/${uname}:${iname}
         fi
