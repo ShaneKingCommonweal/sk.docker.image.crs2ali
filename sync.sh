@@ -57,7 +57,7 @@ function images()
         if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
           let syncCount=$syncCount+1
           echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
-          pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
+          pipe_run "ptp ${iname}:${tname} ${user_registry}/${iname}:${tname}"
         else
           let doneCount=$doneCount+1
           touch ./${pname}/cr1/${iname}/${tname}/done.md
