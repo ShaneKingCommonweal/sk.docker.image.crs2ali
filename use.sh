@@ -8,6 +8,18 @@ plain='\033[0m'
 user_registry="registry-vpc.cn-shanghai.aliyuncs.com/sk-sh"
 rawL3CNames=("registry.cn-hangzhou.aliyuncs.com" "Reserved")
 
+# L1
+for iname in `ls ./cr1`
+do
+  for tname in `ls ./cr1/${iname}`
+  do
+    if [ ! -f ./cr1/${iname}/${tname}/done.md ] ; then
+      docker pull ${user_registry}/${iname}:${tname}
+      docker tag ${user_registry}/${iname}:${tname} ${iname}:${tname}
+    fi
+  done
+done
+
 # L2
 for uname in `ls ./cr2`
 do
@@ -43,6 +55,4 @@ do
       done
     done
   fi
-
-
 done
