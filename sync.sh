@@ -54,10 +54,14 @@ function images()
       for tname in `ls ./${pname}/cr2/${uname}/${iname}`
       do
         if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md ] ; then
-          if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
-            let count=$count+1
-            touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
-            pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
+          if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] ; then
+            if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
+              let count=$count+1
+              echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
+              pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
+            else
+              touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
+            fi
           else
             touch ./${pname}/cr2/${uname}/${iname}/${tname}/checked.md
           fi
@@ -76,10 +80,14 @@ function images()
         for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
         do
           if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md ] ; then
-            if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] || [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
-              let count=$count+1
-              touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
-              pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
+            if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
+              if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
+                let count=$count+1
+                echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
+                pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
+              else
+                touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
+              fi
             else
               touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/checked.md
             fi
@@ -92,7 +100,7 @@ function images()
   # L4
   # rname: r name, https://hub.docker.com/r/vmware/registry-photon/
 
-  echo -e "${red} $count changed!"
+  echo -e "${yellow} $count changed!"
   if [ ${count} -gt 0 ] ; then
     wait
     commit
@@ -127,4 +135,4 @@ do
 done
 
 sleep 120
-echo -e "${red} bye bye"
+echo -e "${green} bye bye"
