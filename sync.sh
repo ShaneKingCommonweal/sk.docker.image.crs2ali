@@ -5,7 +5,7 @@
 #gh_user_name
 #GH_TOKEN
 
-# rname: registry name
+# rname: registry name/user name
 # nname: namespace name
 # iname: image name
 # tname: tag name
