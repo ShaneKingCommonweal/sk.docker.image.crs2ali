@@ -5,16 +5,18 @@
 #gh_user_name
 #GH_TOKEN
 
-# cname: company name
-# uname: user name
+# rname: registry name
+# nname: namespace name
 # iname: image name
 # tname: tag name
+
+# pname: this project name
+
 
 syncCount=0
 doneCount=0
 pname="image.crs2ali.sh"
 user_registry="registry.cn-shanghai.aliyuncs.com/sk-sh"
-rawL3CNames=("registry.cn-hangzhou.aliyuncs.com" "Reserved")
 
 SECONDS=0
 
@@ -53,34 +55,45 @@ function images()
   do
     for tname in `ls ./${pname}/cr1/${iname}`
     do
-      if [ ! -f ./${pname}/cr1/${iname}/${tname}/done.md ] ; then
+      if [ -f ./${pname}/cr1/${iname}/${tname}/s.f ] && [ ! -f ./${pname}/cr1/${iname}/${tname}/s.d ] ; then
         if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
           let syncCount=$syncCount+1
           echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
           pipe_run "ptp ${iname}:${tname} ${user_registry}/${iname}:${tname}"
         else
           let doneCount=$doneCount+1
-          touch ./${pname}/cr1/${iname}/${tname}/done.md
+          touch ./${pname}/cr1/${iname}/${tname}/s.d
         fi
       fi
     done
   done
 
   # L2
-  for uname in `ls ./${pname}/cr2`
+  for rname in `ls ./${pname}/cr2`
   do
-    for iname in `ls ./${pname}/cr2/${uname}`
+    for iname in `ls ./${pname}/cr2/${rname}`
     do
-      for tname in `ls ./${pname}/cr2/${uname}/${iname}`
+      for tname in `ls ./${pname}/cr2/${rname}/${iname}`
       do
-        if [ ! -f ./${pname}/cr2/${uname}/${iname}/${tname}/done.md ] ; then
-          if [ `docker pull ${user_registry}/${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
+        if [ -f ./${pname}/cr2/${rname}/${iname}/${tname}/l.f ] && [ ! -f ./${pname}/cr2/${rname}/${iname}/${tname}/l.d ] ; then
+          if [ `docker pull ${user_registry}/${rname}_${iname}:${tname} | wc -l` -le 2 ] ; then
             let syncCount=$syncCount+1
-            echo -e "${yellow} pull ${user_registry}/${uname}_${iname}:${tname} not found!"
-            pipe_run "ptp ${uname}/${iname}:${tname} ${user_registry}/${uname}_${iname}:${tname}"
+            echo -e "${yellow} pull ${user_registry}/${rname}_${iname}:${tname} not found!"
+            pipe_run "ptp ${rname}/${iname}:${tname} ${user_registry}/${rname}_${iname}:${tname}"
           else
             let doneCount=$doneCount+1
-            touch ./${pname}/cr2/${uname}/${iname}/${tname}/done.md
+            touch ./${pname}/cr2/${rname}/${iname}/${tname}/l.d
+          fi
+        fi
+
+        if [ -f ./${pname}/cr2/${rname}/${iname}/${tname}/s.f ] && [ ! -f ./${pname}/cr2/${rname}/${iname}/${tname}/s.d ] ; then
+          if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
+            let syncCount=$syncCount+1
+            echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
+            pipe_run "ptp ${rname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
+          else
+            let doneCount=$doneCount+1
+            touch ./${pname}/cr2/${rname}/${iname}/${tname}/s.d
           fi
         fi
       done
@@ -88,49 +101,38 @@ function images()
   done
 
   # L3
-  for cname in `ls ./${pname}/cr3`
+  for rname in `ls ./${pname}/cr3`
   do
-    if [[ "${rawL3CNames[@]}" =~ "$cname" ]] ; then
-      for uname in `ls ./${pname}/cr3/${cname}`
+    for nname in `ls ./${pname}/cr3/${rname}`
+    do
+      for iname in `ls ./${pname}/cr3/${rname}/${nname}`
       do
-        for iname in `ls ./${pname}/cr3/${cname}/${uname}`
+        for tname in `ls ./${pname}/cr3/${rname}/${nname}/${iname}`
         do
-          for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
-          do
-            if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
-              if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
-                let syncCount=$syncCount+1
-                echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
-                pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
-              else
-                let doneCount=$doneCount+1
-                touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
-              fi
+          if [ -f ./${pname}/cr3/${rname}/${nname}/${iname}/${tname}/l.f ] && [ ! -f ./${pname}/cr3/${rname}/${nname}/${iname}/${tname}/l.d ] ; then
+            if [ `docker pull ${user_registry}/${rname}_${nname}_${iname}:${tname} | wc -l` -le 2 ] ; then
+              let syncCount=$syncCount+1
+              echo -e "${yellow} pull ${user_registry}/${rname}_${nname}_${iname}:${tname} not found!"
+              pipe_run "ptp ${rname}/${nname}/${iname}:${tname} ${user_registry}/${rname}_${nname}_${iname}:${tname}"
+            else
+              let doneCount=$doneCount+1
+              touch ./${pname}/cr3/${rname}/${nname}/${iname}/${tname}/l.d
             fi
-          done
+          fi
+
+          if [ -f ./${pname}/cr3/${rname}/${nname}/${iname}/${tname}/s.f ] && [ ! -f ./${pname}/cr3/${rname}/${nname}/${iname}/${tname}/s.d ] ; then
+            if [ `docker pull ${user_registry}/${iname}:${tname} | wc -l` -le 2 ] ; then
+              let syncCount=$syncCount+1
+              echo -e "${yellow} pull ${user_registry}/${iname}:${tname} not found!"
+              pipe_run "ptp ${rname}/${nname}/${iname}:${tname} ${user_registry}/${iname}:${tname}"
+            else
+              let doneCount=$doneCount+1
+              touch ./${pname}/cr3/${rname}/${nname}/${iname}/${tname}/s.d
+            fi
+          fi
         done
       done
-    else
-      for uname in `ls ./${pname}/cr3/${cname}`
-      do
-        for iname in `ls ./${pname}/cr3/${cname}/${uname}`
-        do
-          for tname in `ls ./${pname}/cr3/${cname}/${uname}/${iname}`
-          do
-            if [ ! -f ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
-              if [ `docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname} | wc -l` -le 2 ] ; then
-                let syncCount=$syncCount+1
-                echo -e "${yellow} pull ${user_registry}/${cname}_${uname}_${iname}:${tname} not found!"
-                pipe_run "ptp ${cname}/${uname}/${iname}:${tname} ${user_registry}/${cname}_${uname}_${iname}:${tname}"
-              else
-                let doneCount=$doneCount+1
-                touch ./${pname}/cr3/${cname}/${uname}/${iname}/${tname}/done.md
-              fi
-            fi
-          done
-        done
-      done
-    fi
+    done
   done
 
   # L4

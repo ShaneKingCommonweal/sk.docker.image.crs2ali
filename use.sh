@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
 
-red='\033[0;31m'
-green='\033[0;32m'
-yellow='\033[0;33m'
-plain='\033[0m'
 
 user_registry="registry-vpc.cn-shanghai.aliyuncs.com/sk-sh"
-rawL3CNames=("registry.cn-hangzhou.aliyuncs.com" "Reserved")
 
 # L1
 for iname in `ls ./cr1`
 do
   for tname in `ls ./cr1/${iname}`
   do
-    if [ ! -f ./cr1/${iname}/${tname}/done.md ] ; then
+    if [ ! -f ./cr1/${iname}/${tname}/s.d ] ; then
       docker pull ${user_registry}/${iname}:${tname}
       docker tag ${user_registry}/${iname}:${tname} ${iname}:${tname}
     fi
@@ -21,38 +16,44 @@ do
 done
 
 # L2
-for uname in `ls ./cr2`
+for rname in `ls ./cr2`
 do
-  for iname in `ls ./cr2/${uname}`
+  for iname in `ls ./cr2/${rname}`
   do
-    for tname in `ls ./cr2/${uname}/${iname}`
+    for tname in `ls ./cr2/${rname}/${iname}`
     do
-      if [ -f ./cr2/${uname}/${iname}/${tname}/done.md ] ; then
-        docker pull ${user_registry}/${uname}_${iname}:${tname}
-        docker tag ${user_registry}/${uname}_${iname}:${tname} ${uname}/${iname}:${tname}
+      if [ -f ./cr2/${rname}/${iname}/${tname}/l.d ] ; then
+        docker pull ${user_registry}/${rname}_${iname}:${tname}
+        docker tag ${user_registry}/${rname}_${iname}:${tname} ${rname}/${iname}:${tname}
+      fi
+
+      if [ -f ./cr2/${rname}/${iname}/${tname}/s.d ] ; then
+        docker pull ${user_registry}/${iname}:${tname}
+        docker tag ${user_registry}/${iname}:${tname} ${rname}/${iname}:${tname}
       fi
     done
   done
 done
 
 # L3
-for cname in `ls ./cr3`
+for rname in `ls ./cr3`
 do
-  if [[ "${rawL3CNames[@]}" =~ "$cname" ]] ; then
-    echo -e "${yellow} ignore : $cname !"
-  else
-    for uname in `ls ./cr3/${cname}`
+  for nname in `ls ./cr3/${rname}`
+  do
+    for iname in `ls ./cr3/${rname}/${nname}`
     do
-      for iname in `ls ./cr3/${cname}/${uname}`
+      for tname in `ls ./cr3/${rname}/${nname}/${iname}`
       do
-        for tname in `ls ./cr3/${cname}/${uname}/${iname}`
-        do
-          if [ -f ./cr3/${cname}/${uname}/${iname}/${tname}/done.md ] ; then
-            docker pull ${user_registry}/${cname}_${uname}_${iname}:${tname}
-            docker tag ${user_registry}/${cname}_${uname}_${iname}:${tname} ${cname}/${uname}/${iname}:${tname}
-          fi
-        done
+        if [ -f ./cr3/${rname}/${nname}/${iname}/${tname}/l.d ] ; then
+          docker pull ${user_registry}/${rname}_${nname}_${iname}:${tname}
+          docker tag ${user_registry}/${rname}_${nname}_${iname}:${tname} ${rname}/${nname}/${iname}:${tname}
+        fi
+
+        if [ -f ./cr3/${rname}/${nname}/${iname}/${tname}/s.d ] ; then
+          docker pull ${user_registry}/${iname}:${tname}
+          docker tag ${user_registry}/${iname}:${tname} ${rname}/${nname}/${iname}:${tname}
+        fi
       done
     done
-  fi
+  done
 done
