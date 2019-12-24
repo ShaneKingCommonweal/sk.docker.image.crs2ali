@@ -1,0 +1,47 @@
+# === System ===
+.DS_Store
+
+
+# === IDE ===
+# eclipse
+.settings
+.project
+.classpath
+*_mvn_deploy.launch
+
+# idea
+.idea
+*.iml
+
+
+# === Config ===
+*.cfg.sk.properties
+*.cfg.sk.xml
+public/json/codes/
+public/json/mesgs/
+codes_Hash_*
+mesgs_Hash_*
+
+
+# === Common ===
+# mvn
+target
+
+# mysql
+*.mwb
+*.mwb.bak
+
+# sass
+.sass-cache
+
+# Log file
+*.log
+
+# umi
+.umi/
+.umi-production/
+
+dist/
+
+# next
+.next/
