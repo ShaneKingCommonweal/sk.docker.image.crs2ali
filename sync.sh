@@ -15,7 +15,7 @@
 
 syncCount=0
 doneCount=0
-pname="image.crs2ali.sh"
+pname="sh.docker.image.crs2ali"
 user_registry="registry.cn-shanghai.aliyuncs.com/sk-sh"
 
 SECONDS=0
