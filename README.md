@@ -1,4 +1,4 @@
-# sh.docker.image.crs2ali
+# sk.docker.image.crs2ali
 💪docker images: Container Registry Sync to Aliyun Shanghai for internal network
 
 [![][travis img]][travis]
@@ -23,5 +23,5 @@ image name max length: 64
 | s.d  | short done   |
 | l.d  | long done    |
 
-[travis]:https://travis-ci.org/ShaneKing/sh.docker.image.crs2ali
-[travis img]:https://travis-ci.org/ShaneKing/sh.docker.image.crs2ali.svg?branch=master
+[travis]:https://travis-ci.org/ShaneKingCommonweal/sk.docker.image.crs2ali
+[travis img]:https://travis-ci.org/ShaneKingCommonweal/sk.docker.image.crs2ali.svg?branch=master
