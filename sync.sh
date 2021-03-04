@@ -3,6 +3,7 @@
 #alicr_user_name
 #alicr_pass_word
 #gh_user_name
+#gh_org_name
 #GH_TOKEN
 
 # rname: registry name/user name
@@ -15,7 +16,7 @@
 
 syncCount=0
 doneCount=0
-pname="sh.docker.image.crs2ali"
+pname="sk.docker.image.crs2ali"
 user_registry="registry.cn-shanghai.aliyuncs.com/sk-sh"
 
 SECONDS=0
@@ -29,7 +30,7 @@ yellow='\033[0;33m'
 plain='\033[0m'
 
 [[ -d ${pname} ]] && rm -rf ./${pname}
-git clone "https://github.com/${gh_user_name}/${pname}.git"
+git clone "https://github.com/${gh_org_name}/${pname}.git"
 
 function ptp()
 {
@@ -44,7 +45,7 @@ commit()
   git -C ./${pname} pull
   git -C ./${pname} add -A
   git -C ./${pname} commit -m "sync images at $(date +'%Y-%m-%d %H:%M')"
-  git -C ./${pname} push -f "https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_user_name}/${pname}.git" master:master
+  git -C ./${pname} push -f "https://${gh_user_name}:${GH_TOKEN}@github.com/${gh_org_name}/${pname}.git" master:master
   echo 1 > ./commit.done
 }
 
